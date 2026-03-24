@@ -1,11 +1,18 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Lazy initialization para evitar error en build time
+// (Next.js ejecuta el modulo al compilar y las env vars no estan disponibles)
 
-// Cliente server-side (con service key para API routes)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+let _supabaseAdmin: SupabaseClient | null = null;
 
-// Cliente client-side (con anon key)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export function getSupabaseAdmin(): SupabaseClient {
+  if (!_supabaseAdmin) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_KEY;
+    if (!url || !key) {
+      throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_KEY");
+    }
+    _supabaseAdmin = createClient(url, key);
+  }
+  return _supabaseAdmin;
+}

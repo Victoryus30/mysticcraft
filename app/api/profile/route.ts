@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,25 +10,25 @@ export async function POST(req: NextRequest) {
 
     // Consultas en paralelo
     const [readingsRes, ritualsRes, nicknameRes, paymentsRes] = await Promise.all([
-      supabaseAdmin
+      getSupabaseAdmin()
         .from("tarot_readings")
         .select("spread_type, created_at")
         .eq("nullifier_hash", nullifier_hash)
         .order("created_at", { ascending: true }),
 
-      supabaseAdmin
+      getSupabaseAdmin()
         .from("ritual_completions")
         .select("ritual_slug, completed_at")
         .eq("nullifier_hash", nullifier_hash)
         .order("completed_at", { ascending: true }),
 
-      supabaseAdmin
+      getSupabaseAdmin()
         .from("mystic_nicknames")
         .select("nickname")
         .eq("nullifier_hash", nullifier_hash)
         .single(),
 
-      supabaseAdmin
+      getSupabaseAdmin()
         .from("mystic_payments")
         .select("product_type")
         .eq("nullifier_hash", nullifier_hash)

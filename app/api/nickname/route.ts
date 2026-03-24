@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     const trimmed = nickname.trim().slice(0, 20);
 
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("mystic_nicknames")
       .upsert(
         { nullifier_hash, nickname: trimmed, updated_at: new Date().toISOString() },
