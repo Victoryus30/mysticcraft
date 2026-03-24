@@ -46,6 +46,8 @@ export default function TarotReading({ spreadType }: TarotReadingProps) {
     if (newCount === spread.cardCount) {
       if (spreadType === "single") {
         setPhase("result");
+        // Guardar carta del dia en Supabase
+        saveReading(null);
       } else {
         requestInterpretation();
       }
@@ -80,12 +82,38 @@ export default function TarotReading({ spreadType }: TarotReadingProps) {
       const data = await res.json();
       setInterpretation(data.interpretation);
       setPhase("result");
+      // Guardar lectura en Supabase
+      saveReading(data.interpretation);
     } catch (err) {
       console.error(err);
       setError("No se pudo generar la interpretacion. Mostrando significados individuales.");
       setPhase("result");
+      saveReading(null);
     } finally {
       setLoadingAI(false);
+    }
+  };
+
+  // Guardar lectura en Supabase
+  const saveReading = async (interp: string | null) => {
+    if (!nullifierHash) return;
+    try {
+      await fetch("/api/save-reading", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nullifier_hash: nullifierHash,
+          spread_type: spreadType,
+          cards: drawnCards.map((dc) => ({
+            position: dc.positionLabel,
+            card_id: dc.card.id,
+            reversed: dc.reversed,
+          })),
+          interpretation: interp,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to save reading:", err);
     }
   };
 

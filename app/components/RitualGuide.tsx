@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Ritual } from "@/lib/types";
+import { useUser } from "./UserContext";
 
 interface RitualGuideProps {
   ritual: Ritual;
@@ -10,6 +11,7 @@ interface RitualGuideProps {
 type RitualPhase = "intro" | "active" | "complete";
 
 export default function RitualGuide({ ritual }: RitualGuideProps) {
+  const { nullifierHash } = useUser();
   const [phase, setPhase] = useState<RitualPhase>("intro");
   const [currentStep, setCurrentStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -32,7 +34,7 @@ export default function RitualGuide({ ritual }: RitualGuideProps) {
             setCurrentStep((s) => s + 1);
             return ritual.steps[currentStep + 1]?.durationSeconds || 30;
           } else {
-            setPhase("complete");
+            completeRitual();
             return 0;
           }
         }
@@ -58,12 +60,34 @@ export default function RitualGuide({ ritual }: RitualGuideProps) {
     } catch {}
   };
 
+  // Guardar ritual completado en Supabase
+  const saveRitualCompletion = async () => {
+    if (!nullifierHash) return;
+    try {
+      await fetch("/api/save-ritual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nullifier_hash: nullifierHash,
+          ritual_slug: ritual.slug,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to save ritual:", err);
+    }
+  };
+
+  const completeRitual = () => {
+    setPhase("complete");
+    saveRitualCompletion();
+  };
+
   const nextStep = () => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep((s) => s + 1);
       setTimeLeft(ritual.steps[currentStep + 1].durationSeconds);
     } else {
-      setPhase("complete");
+      completeRitual();
     }
   };
 
