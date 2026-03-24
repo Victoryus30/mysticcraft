@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang="es" className={dmSans.variable}>
       <MiniKitProvider>
         <UserProvider>
-          <body className="bg-surface-base text-content-primary font-sans antialiased">
+          <body className="bg-surface-base text-content-primary font-sans antialiased h-screen overflow-y-auto overflow-x-hidden">
             <Onboarding />
             {children}
             <BottomNav />
