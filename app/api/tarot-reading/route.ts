@@ -39,8 +39,8 @@ Instrucciones:
 - No uses formato markdown, escribe en prosa fluida
 - Incluye al final una frase mistica como cierre (ej: "Los astros iluminan tu camino")`;
 
-    // Llamar a OpenAI (o el proveedor que se configure)
-    const apiKey = process.env.OPENAI_API_KEY;
+    // Llamar a Anthropic Claude Haiku (mas barato y rapido)
+    const apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
       // Fallback: interpretacion estatica si no hay API key
@@ -48,17 +48,17 @@ Instrucciones:
       return NextResponse.json({ interpretation: fallback });
     }
 
-    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 500,
-        temperature: 0.8,
+        messages: [{ role: "user", content: prompt }],
       }),
     });
 
@@ -68,7 +68,7 @@ Instrucciones:
     }
 
     const aiData = await aiRes.json();
-    const interpretation = aiData.choices?.[0]?.message?.content || generateFallbackInterpretation(cards, spreadLabel);
+    const interpretation = aiData.content?.[0]?.text || generateFallbackInterpretation(cards, spreadLabel);
 
     // TODO: Guardar en Supabase (tarot_readings table)
 
