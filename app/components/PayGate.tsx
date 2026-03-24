@@ -121,7 +121,7 @@ export default function PayGate({
             <span className="text-content-muted text-sm">Precio</span>
             <span className="text-content-primary font-bold text-lg">${priceUSDC.toFixed(2)} USDC</span>
           </div>
-          <div className="h-px bg-white/5 mb-3" />
+          <div className="h-px bg-content-muted/15 mb-3" />
           <div className="flex items-center justify-between">
             <span className="text-content-muted text-sm">Incluye</span>
             <span className="text-content-secondary text-sm font-semibold">

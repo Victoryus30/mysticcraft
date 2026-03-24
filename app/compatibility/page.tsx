@@ -25,7 +25,7 @@ export default function CompatibilityPage() {
         <span className="text-content-muted text-[11px]">{label}</span>
         <span className="text-content-primary text-[11px] font-bold">{value}%</span>
       </div>
-      <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-content-muted/10 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-1000 ${color}`}
           style={{ width: `${value}%` }}

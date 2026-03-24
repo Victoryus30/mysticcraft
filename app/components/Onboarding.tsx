@@ -109,7 +109,7 @@ export default function Onboarding() {
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === slide
                   ? "w-6 bg-brand-500"
-                  : "w-2 bg-white/10"
+                  : "w-2 bg-content-muted/20"
               }`}
             />
           ))}

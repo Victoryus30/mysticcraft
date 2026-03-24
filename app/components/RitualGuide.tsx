@@ -146,7 +146,7 @@ export default function RitualGuide({ ritual }: RitualGuideProps) {
     return (
       <div className="min-h-screen flex flex-col p-6">
         {/* Progress bar */}
-        <div className="w-full h-1 bg-white/5 rounded-full mb-6 overflow-hidden">
+        <div className="w-full h-1 bg-content-muted/15 rounded-full mb-6 overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-brand-500 to-mystic-500 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
