@@ -4,21 +4,21 @@
 
 :root {
   --font-dm-sans: "DM Sans", system-ui, sans-serif;
-  --brand-500: #A88A3E;
-  --brand-600: #8E7434;
-  --brand-400: #C4A24E;
-  --mystic-500: #5478B0;
-  --mystic-400: #6B8FC7;
+  --brand-500: #D4B030;
+  --brand-600: #B89828;
+  --brand-400: #E8C840;
+  --mystic-500: #8A5AE6;
+  --mystic-400: #A878F0;
 }
 
 body {
-  background-color: #F8F6F0;
+  background-color: #120B2E;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(196, 162, 78, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(107, 143, 199, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(176, 168, 208, 0.04) 0%, transparent 70%);
+    radial-gradient(ellipse at 20% 0%, rgba(138, 90, 230, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(76, 42, 153, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(200, 168, 255, 0.04) 0%, transparent 70%);
   background-attachment: fixed;
-  color: #2D2A3E;
+  color: #F0ECF8;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior: none;
@@ -61,13 +61,13 @@ html, body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(196, 162, 78, 0.12); }
-  50%      { box-shadow: 0 0 25px rgba(196, 162, 78, 0.22); }
+  0%, 100% { box-shadow: 0 0 20px rgba(138, 90, 230, 0.2); }
+  50%      { box-shadow: 0 0 35px rgba(138, 90, 230, 0.4); }
 }
 
 @keyframes pulse-glow-mystic {
-  0%, 100% { box-shadow: 0 0 15px rgba(107, 143, 199, 0.12); }
-  50%      { box-shadow: 0 0 25px rgba(107, 143, 199, 0.22); }
+  0%, 100% { box-shadow: 0 0 20px rgba(200, 168, 255, 0.15); }
+  50%      { box-shadow: 0 0 35px rgba(200, 168, 255, 0.3); }
 }
 
 @keyframes float {
@@ -94,12 +94,12 @@ html, body {
 
 @keyframes mystic-glow {
   0%, 100% {
-    text-shadow: 0 0 10px rgba(196, 162, 78, 0.2),
-                 0 0 20px rgba(196, 162, 78, 0.08);
+    text-shadow: 0 0 10px rgba(200, 168, 255, 0.3),
+                 0 0 20px rgba(138, 90, 230, 0.15);
   }
   50% {
-    text-shadow: 0 0 20px rgba(196, 162, 78, 0.35),
-                 0 0 40px rgba(196, 162, 78, 0.12);
+    text-shadow: 0 0 20px rgba(200, 168, 255, 0.5),
+                 0 0 40px rgba(138, 90, 230, 0.25);
   }
 }
 
@@ -125,7 +125,7 @@ html, body {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(196, 162, 78, 0.08) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(138, 90, 230, 0.1) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
@@ -170,36 +170,36 @@ html, body {
 .stagger-9 { animation-delay: 0.45s; opacity: 0; }
 .stagger-10 { animation-delay: 0.5s; opacity: 0; }
 
-/* ===== GLASS MORPHISM (tema claro celestial) ===== */
+/* ===== GLASS MORPHISM (purpura cosmico) ===== */
 
 .glass {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(138, 90, 230, 0.06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(196, 162, 78, 0.12);
+  border: 1px solid rgba(168, 130, 255, 0.1);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(138, 90, 230, 0.1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(107, 143, 199, 0.12);
-  box-shadow: 0 2px 12px rgba(45, 42, 62, 0.04);
+  border: 1px solid rgba(168, 130, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(18, 11, 46, 0.3);
 }
 
 .glass-elevated {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(138, 90, 230, 0.14);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(196, 162, 78, 0.15);
-  box-shadow: 0 4px 20px rgba(45, 42, 62, 0.06);
+  border: 1px solid rgba(200, 168, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(18, 11, 46, 0.4);
 }
 
 .glass-mystic {
-  background: rgba(107, 143, 199, 0.08);
+  background: rgba(200, 168, 255, 0.08);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(107, 143, 199, 0.15);
+  border: 1px solid rgba(200, 168, 255, 0.12);
 }
 
 /* ===== PROGRESS BAR SHINE ===== */
@@ -215,21 +215,21 @@ html, body {
   left: -40%;
   width: 30%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(196, 162, 78, 0.25), transparent);
+  background: linear-gradient(90deg, transparent, rgba(200, 168, 255, 0.3), transparent);
   animation: progress-shine 2s ease-in-out infinite;
 }
 
 /* ===== TIER GLOWS ===== */
 .glow-free {
-  box-shadow: 0 0 0 1px rgba(107, 143, 199, 0.2), 0 4px 20px rgba(107, 143, 199, 0.1);
+  box-shadow: 0 0 0 1px rgba(138, 90, 230, 0.25), 0 4px 24px rgba(138, 90, 230, 0.15);
 }
 
 .glow-premium {
-  box-shadow: 0 0 0 1px rgba(196, 162, 78, 0.25), 0 4px 20px rgba(196, 162, 78, 0.12);
+  box-shadow: 0 0 0 1px rgba(232, 200, 64, 0.25), 0 4px 24px rgba(232, 200, 64, 0.12);
 }
 
 .glow-deep {
-  box-shadow: 0 0 0 1px rgba(84, 120, 176, 0.25), 0 4px 20px rgba(84, 120, 176, 0.12);
+  box-shadow: 0 0 0 1px rgba(200, 168, 255, 0.3), 0 4px 24px rgba(200, 168, 255, 0.18);
 }
 
 /* ===== TAROT CARD FLIP 3D ===== */
@@ -268,6 +268,6 @@ html, body {
 }
 
 ::selection {
-  background: rgba(196, 162, 78, 0.2);
-  color: #2D2A3E;
+  background: rgba(138, 90, 230, 0.3);
+  color: #fff;
 }

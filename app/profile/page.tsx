@@ -129,7 +129,7 @@ export default function ProfilePage() {
                 onChange={(e) => setTempNick(e.target.value)}
                 maxLength={20}
                 placeholder="Tu nombre mistico"
-                className="bg-white/80 border border-brand-500/20 rounded-lg px-3 py-2 text-sm text-content-primary placeholder:text-content-muted/50 outline-none focus:border-brand-500/50 w-40"
+                className="bg-white/5 border border-mystic-500/20 rounded-lg px-3 py-2 text-sm text-content-primary placeholder:text-content-muted/30 outline-none focus:border-mystic-500/50 w-40"
               />
               <button onClick={saveNickname} className="text-brand-400 text-xs font-bold">OK</button>
               <button onClick={() => setEditing(false)} className="text-content-muted/50 text-xs">X</button>
