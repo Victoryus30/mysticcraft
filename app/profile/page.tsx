@@ -155,17 +155,29 @@ export default function ProfilePage() {
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 justify-center mt-2">
+            <div className="flex flex-col items-center gap-3 mt-2">
               <input
                 type="text"
                 value={tempNick}
                 onChange={(e) => setTempNick(e.target.value)}
                 maxLength={20}
                 placeholder="Tu nombre mistico"
-                className="bg-white/5 border border-mystic-500/20 rounded-lg px-3 py-2 text-sm text-content-primary placeholder:text-content-muted/30 outline-none focus:border-mystic-500/50 w-40"
+                className="bg-white/5 border border-mystic-500/20 rounded-lg px-3 py-2 text-sm text-content-primary placeholder:text-content-muted/30 outline-none focus:border-mystic-500/50 w-48 text-center"
               />
-              <button onClick={saveNickname} className="text-brand-400 text-xs font-bold">OK</button>
-              <button onClick={() => setEditing(false)} className="text-content-muted/50 text-xs">X</button>
+              <div className="flex items-center gap-6">
+                <button
+                  onClick={() => setEditing(false)}
+                  className="px-5 py-2 rounded-xl bg-white/5 text-content-muted text-sm font-semibold active:scale-[0.96] transition-transform"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={saveNickname}
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white text-sm font-bold active:scale-[0.96] transition-transform shadow-lg shadow-brand-500/20"
+                >
+                  Guardar
+                </button>
+              </div>
             </div>
           )}
 
