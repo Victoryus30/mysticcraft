@@ -28,7 +28,16 @@ export default function ProfilePage() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [verifying, setVerifying] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    // Recuperar nickname local si no esta verificado
+    if (!nullifierHash) {
+      try {
+        const localNick = sessionStorage.getItem("mystic_nickname");
+        if (localNick) setNickname(localNick);
+      } catch {}
+    }
+  }, [nullifierHash]);
 
   // Cargar datos reales de Supabase
   useEffect(() => {
@@ -82,7 +91,19 @@ export default function ProfilePage() {
   const ritualsCount = profileData?.ritualsCount || 0;
 
   const saveNickname = async () => {
-    if (!tempNick.trim() || !nullifierHash) return;
+    if (!tempNick.trim()) return;
+
+    // Si no esta verificado, guardar solo localmente
+    if (!nullifierHash) {
+      setNickname(tempNick.trim());
+      try {
+        sessionStorage.setItem("mystic_nickname", tempNick.trim());
+      } catch {}
+      setEditing(false);
+      return;
+    }
+
+    // Si esta verificado, guardar en Supabase
     try {
       const res = await fetch("/api/nickname", {
         method: "POST",
