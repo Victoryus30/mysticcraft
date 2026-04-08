@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MiniKit } from "@worldcoin/minikit-js";
 import { useUser } from "@/app/components/UserContext";
 import { calculateBadges, Badge } from "@/lib/badges";
 import { calculateStreak, StreakInfo } from "@/lib/streaks";
@@ -18,13 +19,14 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
-  const { isVerified, nullifierHash } = useUser();
+  const { isVerified, nullifierHash, setVerified } = useUser();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nickname, setNickname] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [tempNick, setTempNick] = useState("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -97,6 +99,37 @@ export default function ProfilePage() {
     setEditing(false);
   };
 
+  const handleVerify = async () => {
+    if (!MiniKit.isInstalled()) return;
+    setVerifying(true);
+    try {
+      const { finalPayload } = await MiniKit.commandsAsync.verify({
+        action: process.env.NEXT_PUBLIC_VERIFY_ACTION!,
+        verification_level: "orb" as any,
+      });
+
+      if (finalPayload.status === "success") {
+        const res = await fetch("/api/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            payload: finalPayload,
+            action: process.env.NEXT_PUBLIC_VERIFY_ACTION,
+            signal: "",
+          }),
+        });
+        const data = await res.json();
+        if (data.verifyRes?.success) {
+          setVerified(data.nullifier_hash);
+        }
+      }
+    } catch (err) {
+      console.error("Verify error:", err);
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -143,7 +176,14 @@ export default function ProfilePage() {
               <span className="text-[10px] font-semibold text-emerald-400 tracking-wide">VERIFICADO</span>
             </div>
           ) : (
-            <p className="text-content-muted/50 text-xs mt-3">No verificado</p>
+            <button
+              onClick={handleVerify}
+              disabled={verifying}
+              className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-brand-500 text-white text-xs font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg shadow-brand-500/20"
+            >
+              <span>{"\ud83c\udf10"}</span>
+              {verifying ? "Verificando..." : "VERIFICAR CON WORLD ID"}
+            </button>
           )}
         </div>
 
