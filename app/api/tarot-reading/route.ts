@@ -10,10 +10,10 @@ interface CardInput {
 
 export async function POST(req: NextRequest) {
   try {
-    const { spread_type, cards, nullifier_hash } = await req.json() as {
+    const { spread_type, cards, wallet_address } = await req.json() as {
       spread_type: string;
       cards: CardInput[];
-      nullifier_hash: string | null;
+      wallet_address: string | null;
     };
 
     // Construir prompt para IA

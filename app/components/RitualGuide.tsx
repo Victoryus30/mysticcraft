@@ -11,7 +11,7 @@ interface RitualGuideProps {
 type RitualPhase = "intro" | "active" | "complete";
 
 export default function RitualGuide({ ritual }: RitualGuideProps) {
-  const { nullifierHash } = useUser();
+  const { walletAddress } = useUser();
   const [phase, setPhase] = useState<RitualPhase>("intro");
   const [currentStep, setCurrentStep] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -62,13 +62,13 @@ export default function RitualGuide({ ritual }: RitualGuideProps) {
 
   // Guardar ritual completado en Supabase
   const saveRitualCompletion = async () => {
-    if (!nullifierHash) return;
+    if (!walletAddress) return;
     try {
       await fetch("/api/save-ritual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nullifier_hash: nullifierHash,
+          wallet_address: walletAddress,
           ritual_slug: ritual.slug,
         }),
       });

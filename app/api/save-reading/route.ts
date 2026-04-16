@@ -3,15 +3,15 @@ import { getSupabaseAdmin } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
-    const { nullifier_hash, spread_type, cards, interpretation } = await req.json();
-    if (!nullifier_hash || !spread_type || !cards) {
+    const { wallet_address, spread_type, cards, interpretation } = await req.json();
+    if (!wallet_address || !spread_type || !cards) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
     const { error } = await getSupabaseAdmin()
       .from("tarot_readings")
       .insert({
-        nullifier_hash,
+        nullifier_hash: wallet_address,
         spread_type,
         cards,
         interpretation: interpretation || null,

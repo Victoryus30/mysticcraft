@@ -19,40 +19,34 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
-  const { isVerified, nullifierHash, setVerified } = useUser();
+  const { isIdentified, walletAddress, triggerWalletAuth, logout } = useUser();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nickname, setNickname] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [tempNick, setTempNick] = useState("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Recuperar nickname local si no esta verificado
-    if (!nullifierHash) {
+    if (!walletAddress) {
       try {
         const localNick = sessionStorage.getItem("mystic_nickname");
         if (localNick) setNickname(localNick);
       } catch {}
     }
-  }, [nullifierHash]);
+  }, [walletAddress]);
 
   // Cargar datos reales de Supabase
   useEffect(() => {
-    if (!nullifierHash) {
+    if (!walletAddress) {
       setLoading(false);
       return;
     }
 
     const loadProfile = async () => {
       try {
-        const res = await fetch("/api/profile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nullifier_hash: nullifierHash }),
-        });
+        const res = await fetch(`/api/profile?wallet=${walletAddress}`);
         if (res.ok) {
           const data: ProfileData = await res.json();
           setProfileData(data);
@@ -66,9 +60,8 @@ export default function ProfilePage() {
     };
 
     loadProfile();
-  }, [nullifierHash]);
+  }, [walletAddress]);
 
-  // Calcular streak y badges desde datos reales
   const streak: StreakInfo = profileData
     ? calculateStreak(profileData.activityDates)
     : { current: 0, longest: 0, isActiveToday: false };
@@ -85,16 +78,13 @@ export default function ProfilePage() {
   });
 
   const unlockedBadges = badges.filter((b) => b.unlocked);
-  const lockedBadges = badges.filter((b) => !b.unlocked);
-
   const readingsCount = profileData?.readingsCount || 0;
   const ritualsCount = profileData?.ritualsCount || 0;
 
   const saveNickname = async () => {
     if (!tempNick.trim()) return;
 
-    // Si no esta verificado, guardar solo localmente
-    if (!nullifierHash) {
+    if (!walletAddress) {
       setNickname(tempNick.trim());
       try {
         sessionStorage.setItem("mystic_nickname", tempNick.trim());
@@ -103,12 +93,11 @@ export default function ProfilePage() {
       return;
     }
 
-    // Si esta verificado, guardar en Supabase
     try {
       const res = await fetch("/api/nickname", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nullifier_hash: nullifierHash, nickname: tempNick.trim() }),
+        body: JSON.stringify({ wallet_address: walletAddress, nickname: tempNick.trim() }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -118,37 +107,6 @@ export default function ProfilePage() {
       console.error("Failed to save nickname:", err);
     }
     setEditing(false);
-  };
-
-  const handleVerify = async () => {
-    if (!MiniKit.isInstalled()) return;
-    setVerifying(true);
-    try {
-      const { finalPayload } = await MiniKit.commandsAsync.verify({
-        action: process.env.NEXT_PUBLIC_VERIFY_ACTION!,
-        verification_level: "orb" as any,
-      });
-
-      if (finalPayload.status === "success") {
-        const res = await fetch("/api/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            payload: finalPayload,
-            action: process.env.NEXT_PUBLIC_VERIFY_ACTION,
-            signal: "",
-          }),
-        });
-        const data = await res.json();
-        if (data.verifyRes?.success) {
-          setVerified(data.nullifier_hash);
-        }
-      }
-    } catch (err) {
-      console.error("Verify error:", err);
-    } finally {
-      setVerifying(false);
-    }
   };
 
   if (!mounted) return null;
@@ -202,21 +160,23 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {/* Verificacion */}
-          {isVerified ? (
+          {/* Wallet status */}
+          {isIdentified ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mt-3">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-[10px] font-semibold text-emerald-400 tracking-wide">VERIFICADO</span>
+              <span className="text-[10px] font-semibold text-emerald-400 tracking-wide">CONECTADO</span>
             </div>
-          ) : (
+          ) : MiniKit.isInstalled() ? (
             <button
-              onClick={handleVerify}
-              disabled={verifying}
+              onClick={triggerWalletAuth}
               className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-brand-500 text-white text-xs font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg shadow-brand-500/20"
             >
-              <span>{"\ud83c\udf10"}</span>
-              {verifying ? "Verificando..." : "VERIFICAR CON WORLD ID"}
+              CONECTAR WALLET
             </button>
+          ) : (
+            <p className="text-content-muted text-xs mt-3">
+              Abre en World App para conectar tu wallet
+            </p>
           )}
         </div>
 
@@ -287,6 +247,18 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
+
+            {/* Cerrar sesion */}
+            {isIdentified && (
+              <div className="mt-6 animate-fade-in-up stagger-4">
+                <button
+                  onClick={logout}
+                  className="w-full py-3 rounded-xl text-sm font-semibold glass-card text-red-400 border border-red-500/20 active:scale-[0.98] transition-transform"
+                >
+                  Cerrar sesion
+                </button>
+              </div>
+            )}
           </>
         )}
 

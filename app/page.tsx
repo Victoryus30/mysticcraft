@@ -144,7 +144,7 @@ function CompatibilityWidget() {
 /* ===== PAGE ===== */
 
 export default function HomePage() {
-  const { isVerified } = useUser();
+  const { isIdentified } = useUser();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -165,12 +165,12 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Verificacion badge */}
-      {isVerified && (
+      {/* Wallet badge */}
+      {isIdentified && (
         <div className="flex justify-center mb-6 animate-fade-in">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            <span className="text-[10px] font-semibold text-emerald-400 tracking-wide">VERIFICADO</span>
+            <span className="text-[10px] font-semibold text-emerald-400 tracking-wide">CONECTADO</span>
           </div>
         </div>
       )}

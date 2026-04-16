@@ -15,7 +15,7 @@ type ReadingPhase = "intro" | "drawing" | "revealing" | "interpreting" | "result
 
 export default function TarotReading({ spreadType }: TarotReadingProps) {
   const spread = getSpread(spreadType);
-  const { nullifierHash } = useUser();
+  const { walletAddress } = useUser();
 
   const [phase, setPhase] = useState<ReadingPhase>("intro");
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([]);
@@ -73,7 +73,7 @@ export default function TarotReading({ spreadType }: TarotReadingProps) {
             meaning: dc.reversed ? dc.card.meaningReversed : dc.card.meaningUpright,
             keywords: dc.card.keywords,
           })),
-          nullifier_hash: nullifierHash,
+          wallet_address: walletAddress,
         }),
       });
 
@@ -96,13 +96,13 @@ export default function TarotReading({ spreadType }: TarotReadingProps) {
 
   // Guardar lectura en Supabase
   const saveReading = async (interp: string | null) => {
-    if (!nullifierHash) return;
+    if (!walletAddress) return;
     try {
       await fetch("/api/save-reading", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nullifier_hash: nullifierHash,
+          wallet_address: walletAddress,
           spread_type: spreadType,
           cards: drawnCards.map((dc) => ({
             position: dc.positionLabel,

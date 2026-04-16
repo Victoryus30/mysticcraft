@@ -25,7 +25,7 @@ export default function PayGate({
 }: PayGateProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { nullifierHash } = useUser();
+  const { walletAddress } = useUser();
 
   const tierEmoji = tier === "deep" ? "\ud83d\udd2e" : "\u2b50";
   const tierLabel = tier === "deep" ? "Deep" : "Premium";
@@ -45,7 +45,7 @@ export default function PayGate({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product_id: productId,
-          nullifier_hash: nullifierHash || null,
+          wallet_address: walletAddress || null,
         }),
       });
 

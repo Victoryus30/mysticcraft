@@ -1,10 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
+export async function GET(req: NextRequest) {
+  try {
+    const wallet = req.nextUrl.searchParams.get("wallet");
+    if (!wallet) {
+      return NextResponse.json({ error: "Missing wallet" }, { status: 400 });
+    }
+
+    const { data } = await getSupabaseAdmin()
+      .from("mystic_nicknames")
+      .select("nickname")
+      .eq("nullifier_hash", wallet)
+      .single();
+
+    return NextResponse.json({ nickname: data?.nickname || null });
+  } catch (error) {
+    console.error("Nickname GET error:", error);
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { nullifier_hash, nickname } = await req.json();
-    if (!nullifier_hash || !nickname) {
+    const { wallet_address, nickname } = await req.json();
+    if (!wallet_address || !nickname) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
@@ -13,7 +33,7 @@ export async function POST(req: NextRequest) {
     const { error } = await getSupabaseAdmin()
       .from("mystic_nicknames")
       .upsert(
-        { nullifier_hash, nickname: trimmed, updated_at: new Date().toISOString() },
+        { nullifier_hash: wallet_address, nickname: trimmed, updated_at: new Date().toISOString() },
         { onConflict: "nullifier_hash" }
       );
 
